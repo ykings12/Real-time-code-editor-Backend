@@ -14,7 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "server": "nodemon index.js",
-    "build": "react-scripts build"  // Add this line
+    "build": "react-scripts build" 
 
   },
   "engines": {

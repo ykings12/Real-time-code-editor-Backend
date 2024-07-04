@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { Server } = require('socket.io');
 const ACTIONS = require('./Action');
-const cors=require('cors');
+const cors = require('cors');
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -14,17 +14,24 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({
-    extended:true
+    extended: true
 }));
 
-app.use(express.static('build'));
+// Log the directory
+console.log('Serving static files from:', path.join(__dirname, 'build'));
+app.use(express.static(path.join(__dirname, 'build')));
+
 app.use((req, res, next) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'build', 'index.html'), (err) => {
+        if (err) {
+            console.error('Failed to send index.html:', err);
+            res.status(500).send(err);
+        }
+    });
 });
 
 const userSocketMap = {};
 function getAllConnectedClients(roomId) {
-    // Map
     return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
         (socketId) => {
             return {
